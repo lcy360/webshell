@@ -1,0 +1,19 @@
+node_modules/
+
+# Runtime data, credentials, and local sessions
+data/*.json
+!data/.gitkeep
+
+# Local environment
+.env
+.env.local
+
+# Logs and OS/editor files
+*.log
+.DS_Store
+.vscode/
+.idea/
+
+# Playwright/browser artifacts
+test-results/
+playwright-report/

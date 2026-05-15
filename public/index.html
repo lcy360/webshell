@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Webshell</title>
+    <link rel="icon" href="/logo.svg" type="image/svg+xml" />
+    <link rel="stylesheet" href="/vendor/xterm/css/xterm.css" />
+    <link rel="stylesheet" href="/styles.css?v=20260515-1" />
+  </head>
+  <body>
+    <main class="app-shell">
+      <aside class="sessions-pane">
+        <div class="brand">
+          <img class="brand-logo" src="/logo.svg" alt="" />
+          <div class="brand-copy">
+            <h1>Webshell</h1>
+            <p>Live terminal manager</p>
+          </div>
+          <div class="brand-actions">
+            <button id="refreshBtn" class="icon-btn" title="Refresh" aria-label="Refresh sessions">
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M20 6v5h-5"></path>
+                <path d="M19 11a7 7 0 1 0-2 5"></path>
+              </svg>
+            </button>
+            <button id="logoutBtn" class="icon-btn" title="Sign out" aria-label="Sign out">
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+                <path d="M16 17l5-5-5-5"></path>
+                <path d="M21 12H9"></path>
+              </svg>
+            </button>
+          </div>
+        </div>
+
+        <section class="panel new-session">
+          <input id="sessionTitle" placeholder="Shell name, optional" autocomplete="off" />
+          <button id="startSessionBtn" class="add-shell-btn" title="New shell" aria-label="New shell">+</button>
+        </section>
+
+        <div class="section-head">
+          <h2>Sessions</h2>
+          <span id="sessionCount">0</span>
+        </div>
+        <div id="sessions" class="session-list"></div>
+      </aside>
+
+      <section class="terminal-pane">
+        <header class="terminal-head">
+          <div>
+            <h2 id="terminalTitle">No session selected</h2>
+            <p id="terminalMeta">Create or select a session.</p>
+          </div>
+          <div class="actions">
+            <div class="terminal-shortcuts" aria-label="Terminal shortcut keys">
+              <button class="shortcut-key" data-terminal-input="up" type="button" title="Up" aria-label="Up arrow">↑</button>
+              <button class="shortcut-key" data-terminal-input="down" type="button" title="Down" aria-label="Down arrow">↓</button>
+              <button class="shortcut-key wide" data-terminal-input="shift-tab" type="button">Shift+Tab</button>
+            </div>
+            <button id="closeSessionBtn" class="close-session-btn" title="Close session" aria-label="Close session" disabled>X</button>
+          </div>
+        </header>
+
+        <div id="terminal" class="terminal"></div>
+      </section>
+    </main>
+    <div id="toast" class="toast" hidden></div>
+
+    <script src="/vendor/xterm/lib/xterm.js"></script>
+    <script src="/vendor/xterm-addon-fit/lib/addon-fit.js"></script>
+    <script src="/app.js?v=20260515-1"></script>
+  </body>
+</html>

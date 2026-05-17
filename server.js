@@ -14,6 +14,7 @@ const PORT = Number(process.env.PORT || 4767);
 const HOST = process.env.HOST || "127.0.0.1";
 const { dataDir: DATA_DIR, statePath: DB_PATH, authPath: AUTH_PATH } = authPaths(__dirname);
 const LIVE_BUFFER_LIMIT = 240_000;
+const SNAPSHOT_REPLAY_LIMIT = Math.max(20_000, Number(process.env.WEBSHELL_SNAPSHOT_REPLAY_LIMIT || 80_000));
 const OUTPUT_FLUSH_MS = Math.max(0, Number(process.env.WEBSHELL_OUTPUT_FLUSH_MS || 4));
 const OUTPUT_FLUSH_BYTES = Math.max(1024, Number(process.env.WEBSHELL_OUTPUT_FLUSH_BYTES || 16_384));
 const APP_VERSION = String(Date.now());
@@ -141,6 +142,12 @@ function publicSession(session) {
     transport: live?.transport ?? null,
     isLive: Boolean(live)
   };
+}
+
+function replayBuffer(live) {
+  const buffer = live?.buffer || "";
+  if (buffer.length <= SNAPSHOT_REPLAY_LIMIT) return buffer;
+  return buffer.slice(buffer.length - SNAPSHOT_REPLAY_LIMIT);
 }
 
 function getShell() {
@@ -501,7 +508,7 @@ wss.on("connection", (ws) => {
       const previousSessionId = wsSubscriptions.get(ws);
       if (previousSessionId === session.id) {
         const live = runtime.get(session.id);
-        ws.send(JSON.stringify({ type: "terminal:snapshot", sessionId: session.id, data: live?.buffer || "" }));
+        ws.send(JSON.stringify({ type: "terminal:snapshot", sessionId: session.id, data: replayBuffer(live) }));
         ws.send(JSON.stringify({ type: "session:update", session: publicSession(session) }));
         return;
       }
@@ -512,7 +519,7 @@ wss.on("connection", (ws) => {
       const live = runtime.get(session.id);
       wsSubscriptions.set(ws, session.id);
       if (live) live.subscribers.add(ws);
-      ws.send(JSON.stringify({ type: "terminal:snapshot", sessionId: session.id, data: live?.buffer || "" }));
+      ws.send(JSON.stringify({ type: "terminal:snapshot", sessionId: session.id, data: replayBuffer(live) }));
       ws.send(JSON.stringify({ type: "session:update", session: publicSession(session) }));
       return;
     }

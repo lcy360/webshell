@@ -68,11 +68,14 @@ WEBSHELL_PASSWORD=change-me
 WEBSHELL_DATA_DIR=/path/to/runtime-data
 WEBSHELL_OUTPUT_FLUSH_MS=4
 WEBSHELL_OUTPUT_FLUSH_BYTES=16384
+WEBSHELL_SNAPSHOT_REPLAY_LIMIT=80000
 ```
 
 `WEBSHELL_DATA_DIR` defaults to `./data`.
 
 For lower perceived latency, reduce `WEBSHELL_OUTPUT_FLUSH_MS`. For less network and CPU churn, increase it. `4` is a practical default for interactive use.
+
+`WEBSHELL_SNAPSHOT_REPLAY_LIMIT` controls how much terminal history is replayed when switching back to a shell. Lower values make switching faster. Higher values preserve more visible history.
 
 ## Runtime Data
 
@@ -152,6 +155,8 @@ These shortcut buttons send terminal control sequences directly to the PTY, whic
 Webshell sets `LANG`, `LC_ALL`, and `LC_CTYPE` to UTF-8 defaults when the host does not provide them. The browser terminal font stack includes common Chinese fonts on macOS and Linux.
 
 The frontend tracks IME composition events so partially composed Chinese text is not sent early. Output uses immediate writes for small chunks and batched writes for large bursts, which keeps normal typing responsive without making large command output expensive.
+
+Session switching uses a local per-session tail cache first, then reconciles with the server snapshot. This avoids replaying a large terminal buffer every time you switch tabs.
 
 ## Development
 

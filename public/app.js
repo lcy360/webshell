@@ -10,9 +10,13 @@ const state = {
   isProgrammaticWrite: false,
   isComposing: false,
   compositionBuffer: "",
+  sessionSnapshots: new Map(),
   outputQueue: "",
   outputFrame: 0
 };
+
+const LOCAL_SNAPSHOT_LIMIT = 80_000;
+const SNAPSHOT_CHUNK_SIZE = 16_384;
 
 const $ = (id) => document.getElementById(id);
 let toastTimer = null;
@@ -91,6 +95,7 @@ function upsertSession(session) {
 
 function removeSession(sessionId) {
   state.sessions = state.sessions.filter((session) => session.id !== sessionId);
+  state.sessionSnapshots.delete(sessionId);
   if (state.activeSessionId === sessionId) {
     const next = state.sessions[0] || null;
     state.activeSessionId = next?.id || null;
@@ -205,6 +210,9 @@ function sendTerminalInput(data) {
 }
 
 function enqueueOutput(data) {
+  if (state.activeSessionId) {
+    appendLocalSnapshot(state.activeSessionId, data);
+  }
   if (!state.outputFrame && !state.outputQueue && data.length < 2048) {
     state.term.write(data);
     return;
@@ -217,6 +225,49 @@ function enqueueOutput(data) {
     state.outputFrame = 0;
     if (next) state.term.write(next);
   });
+}
+
+function appendLocalSnapshot(sessionId, data) {
+  const current = state.sessionSnapshots.get(sessionId) || "";
+  const next = current + data;
+  state.sessionSnapshots.set(sessionId, next.length > LOCAL_SNAPSHOT_LIMIT ? next.slice(next.length - LOCAL_SNAPSHOT_LIMIT) : next);
+}
+
+function clearPendingOutput() {
+  state.outputQueue = "";
+  if (state.outputFrame) cancelAnimationFrame(state.outputFrame);
+  state.outputFrame = 0;
+}
+
+function resetTerminalForReplay() {
+  clearPendingOutput();
+  state.term.reset();
+  state.term.clear();
+  state.isProgrammaticWrite = true;
+  state.isComposing = false;
+  state.compositionBuffer = "";
+}
+
+function writeSnapshotChunked(data, token, done) {
+  if (!data) {
+    done();
+    return;
+  }
+  let offset = 0;
+  const writeNext = () => {
+    if (token !== state.replayToken) return;
+    const chunk = data.slice(offset, offset + SNAPSHOT_CHUNK_SIZE);
+    offset += chunk.length;
+    state.term.write(chunk, () => {
+      if (token !== state.replayToken) return;
+      if (offset < data.length) {
+        requestAnimationFrame(writeNext);
+      } else {
+        done();
+      }
+    });
+  };
+  writeNext();
 }
 
 function connectSocket() {
@@ -233,14 +284,15 @@ function connectSocket() {
     const msg = JSON.parse(event.data);
     if (msg.type === "terminal:snapshot" && msg.sessionId === state.activeSessionId) {
       const token = ++state.replayToken;
-      state.outputQueue = "";
-      if (state.outputFrame) cancelAnimationFrame(state.outputFrame);
-      state.outputFrame = 0;
-      state.term.reset();
-      state.term.clear();
-      state.isProgrammaticWrite = true;
-      state.isComposing = false;
-      state.compositionBuffer = "";
+      const currentSnapshot = state.sessionSnapshots.get(msg.sessionId) || "";
+      if ((msg.data || "") === currentSnapshot) {
+        state.isProgrammaticWrite = false;
+        state.term.focus();
+        fitAndResize();
+        return;
+      }
+      state.sessionSnapshots.set(msg.sessionId, msg.data || "");
+      resetTerminalForReplay();
       const done = () => {
         if (token !== state.replayToken) return;
         requestAnimationFrame(() => {
@@ -250,8 +302,7 @@ function connectSocket() {
           state.term.focus();
         });
       };
-      if (msg.data) state.term.write(msg.data, done);
-      else done();
+      writeSnapshotChunked(msg.data || "", token, done);
     }
     if (msg.type === "terminal:output" && msg.sessionId === state.activeSessionId) {
       enqueueOutput(msg.data);
@@ -284,13 +335,22 @@ function attachTerminal(sessionId) {
   state.isProgrammaticWrite = false;
   state.isComposing = false;
   state.compositionBuffer = "";
-  state.outputQueue = "";
-  if (state.outputFrame) cancelAnimationFrame(state.outputFrame);
-  state.outputFrame = 0;
-  state.term.reset();
-  state.term.clear();
   state.activeSessionId = sessionId;
   render();
+  const cachedSnapshot = state.sessionSnapshots.get(sessionId) || "";
+  if (cachedSnapshot) {
+    const token = state.replayToken;
+    resetTerminalForReplay();
+    writeSnapshotChunked(cachedSnapshot, token, () => {
+      if (token !== state.replayToken) return;
+      state.isProgrammaticWrite = false;
+      state.term.focus();
+    });
+  } else {
+    clearPendingOutput();
+    state.term.reset();
+    state.term.clear();
+  }
   scheduleFit();
   sendAttach(sessionId);
 }

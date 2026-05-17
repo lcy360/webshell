@@ -3,12 +3,26 @@ import http from "node:http";
 import os from "node:os";
 import path from "node:path";
 import { spawn } from "node:child_process";
+import { once } from "node:events";
 import WebSocket from "ws";
 
 const root = path.dirname(path.dirname(new URL(import.meta.url).pathname));
 const port = Number(process.env.E2E_PORT || 4897);
 const dataDir = fs.mkdtempSync(path.join(os.tmpdir(), "webshell-e2e-"));
+let scriptDataDir = null;
 let cookie = "";
+
+async function runScript(script, env) {
+  const child = spawn(process.execPath, [script], {
+    cwd: root,
+    env: { ...process.env, ...env },
+    stdio: ["ignore", "pipe", "pipe"]
+  });
+  const [code] = await once(child, "exit");
+  if (code !== 0) {
+    throw new Error(`${script} exited with ${code}. Set WEBSHELL_PASSWORD and check script output.`);
+  }
+}
 
 const server = spawn(process.execPath, ["server.js"], {
   cwd: root,
@@ -18,7 +32,8 @@ const server = spawn(process.execPath, ["server.js"], {
     PORT: String(port),
     WEBSHELL_DATA_DIR: dataDir,
     WEBSHELL_USERNAME: "e2e",
-    WEBSHELL_PASSWORD: "e2e-password"
+    WEBSHELL_PASSWORD: "e2e-password",
+    WEBSHELL_OUTPUT_FLUSH_MS: "2"
   },
   stdio: ["ignore", "pipe", "pipe"]
 });
@@ -84,7 +99,23 @@ async function waitForServer() {
 }
 
 try {
+  scriptDataDir = fs.mkdtempSync(path.join(os.tmpdir(), "webshell-script-e2e-"));
+  await runScript("scripts/init-user.mjs", {
+    WEBSHELL_DATA_DIR: scriptDataDir,
+    WEBSHELL_USERNAME: "script",
+    WEBSHELL_PASSWORD: "first"
+  });
+  await runScript("scripts/reset-password.mjs", {
+    WEBSHELL_DATA_DIR: scriptDataDir,
+    WEBSHELL_USERNAME: "script",
+    WEBSHELL_PASSWORD: "second"
+  });
+
   await waitForServer();
+  const authPath = path.join(dataDir, "auth.json");
+  if (!fs.existsSync(authPath)) {
+    throw new Error("auth file was not created in WEBSHELL_DATA_DIR");
+  }
   await request("POST", "/api/login", { username: "e2e", password: "e2e-password" });
   const session = await request("POST", "/api/sessions", { title: "e2e" });
 
@@ -122,4 +153,5 @@ try {
 } finally {
   server.kill();
   fs.rmSync(dataDir, { recursive: true, force: true });
+  if (scriptDataDir) fs.rmSync(scriptDataDir, { recursive: true, force: true });
 }

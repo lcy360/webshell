@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "https://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+  <key>Label</key>
+  <string>com.webshell.app</string>
+  <key>WorkingDirectory</key>
+  <string>/Users/YOUR_USER/intentrade/webshell</string>
+  <key>ProgramArguments</key>
+  <array>
+    <string>/usr/local/bin/npm</string>
+    <string>start</string>
+  </array>
+  <key>EnvironmentVariables</key>
+  <dict>
+    <key>HOST</key>
+    <string>127.0.0.1</string>
+    <key>PORT</key>
+    <string>4767</string>
+    <key>WEBSHELL_DATA_DIR</key>
+    <string>/Users/YOUR_USER/.webshell</string>
+    <key>WEBSHELL_OUTPUT_FLUSH_MS</key>
+    <string>4</string>
+  </dict>
+  <key>RunAtLoad</key>
+  <true/>
+  <key>KeepAlive</key>
+  <true/>
+  <key>StandardOutPath</key>
+  <string>/tmp/webshell.log</string>
+  <key>StandardErrorPath</key>
+  <string>/tmp/webshell.err</string>
+</dict>
+</plist>

@@ -7,16 +7,15 @@ import { spawn } from "node:child_process";
 import { fileURLToPath } from "node:url";
 import { WebSocketServer } from "ws";
 import pty from "@homebridge/node-pty-prebuilt-multiarch";
+import { authPaths, createAuthRecord, passwordHash } from "./lib/auth.js";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const PORT = Number(process.env.PORT || 4767);
 const HOST = process.env.HOST || "127.0.0.1";
-const DATA_DIR = process.env.WEBSHELL_DATA_DIR || path.join(__dirname, "data");
-const DB_PATH = path.join(DATA_DIR, "state.json");
-const AUTH_PATH = path.join(DATA_DIR, "auth.json");
+const { dataDir: DATA_DIR, statePath: DB_PATH, authPath: AUTH_PATH } = authPaths(__dirname);
 const LIVE_BUFFER_LIMIT = 240_000;
-const OUTPUT_FLUSH_MS = 8;
-const OUTPUT_FLUSH_BYTES = 16_384;
+const OUTPUT_FLUSH_MS = Math.max(0, Number(process.env.WEBSHELL_OUTPUT_FLUSH_MS || 4));
+const OUTPUT_FLUSH_BYTES = Math.max(1024, Number(process.env.WEBSHELL_OUTPUT_FLUSH_BYTES || 16_384));
 const APP_VERSION = String(Date.now());
 
 fs.mkdirSync(DATA_DIR, { recursive: true });
@@ -29,23 +28,13 @@ function id(prefix) {
   return `${prefix}_${Date.now().toString(36)}_${Math.random().toString(36).slice(2, 8)}`;
 }
 
-function passwordHash(password, salt) {
-  return crypto.scryptSync(String(password || ""), salt, 64).toString("hex");
-}
-
 function ensureAuth() {
   if (fs.existsSync(AUTH_PATH)) return;
 
   const username = process.env.WEBSHELL_USERNAME || "admin";
   const generatedPassword = crypto.randomBytes(12).toString("base64url");
   const password = process.env.WEBSHELL_PASSWORD || generatedPassword;
-  const salt = crypto.randomBytes(16).toString("hex");
-  writeAuth({
-    username,
-    salt,
-    passwordHash: passwordHash(password, salt),
-    sessions: {}
-  });
+  writeAuth(createAuthRecord(username, password));
 
   if (!process.env.WEBSHELL_PASSWORD) {
     console.log("");
@@ -319,7 +308,7 @@ function startPty(session) {
   if (fallbackReason) {
     setTimeout(() => {
       for (const ws of live.subscribers) {
-        if (ws.readyState === ws.OPEN) ws.send(JSON.stringify({ type: "terminal:output", sessionId: session.id, data: `\r\n[agent-workbench] ${fallbackReason}\r\n` }));
+        if (ws.readyState === ws.OPEN) ws.send(JSON.stringify({ type: "terminal:output", sessionId: session.id, data: `\r\n[webshell] ${fallbackReason}\r\n` }));
       }
     }, 0);
   }
@@ -485,7 +474,7 @@ app.post("/api/sessions/:id/stop", (req, res) => {
 });
 
 const server = app.listen(PORT, HOST, () => {
-  console.log(`Agent Workbench listening on http://${HOST}:${PORT}`);
+  console.log(`Webshell listening on http://${HOST}:${PORT}`);
 });
 
 const wss = new WebSocketServer({

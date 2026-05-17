@@ -6,7 +6,9 @@
   "type": "module",
   "scripts": {
     "start": "node server.js",
-    "check": "node --check server.js && node --check public/app.js",
+    "init-user": "node scripts/init-user.mjs",
+    "reset-password": "node scripts/reset-password.mjs",
+    "check": "node --check server.js && node --check public/app.js && node --check scripts/init-user.mjs && node --check scripts/reset-password.mjs && node --check scripts/e2e.mjs",
     "test:e2e": "node scripts/e2e.mjs"
   },
   "dependencies": {

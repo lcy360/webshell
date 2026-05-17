@@ -8,6 +8,8 @@ const state = {
   pendingAttachSessionId: null,
   replayToken: 0,
   isProgrammaticWrite: false,
+  isComposing: false,
+  compositionBuffer: "",
   outputQueue: "",
   outputFrame: 0
 };
@@ -70,7 +72,7 @@ async function checkVersion() {
     return;
   }
   if (loadedServerVersion !== body.version) {
-    showToast("Workbench updated. Refresh the page.", "error");
+    showToast("Webshell updated. Refresh the page.", "error");
   }
 }
 
@@ -163,11 +165,36 @@ function ensureTerminal() {
   state.fit = new FitAddon.FitAddon();
   state.term.loadAddon(state.fit);
   state.term.open($("terminal"));
+  bindCompositionEvents();
   scheduleFit();
   $("terminal").addEventListener("click", () => state.term.focus());
   state.term.onData((data) => {
     if (state.isProgrammaticWrite) return;
+    if (state.isComposing) {
+      state.compositionBuffer += data;
+      return;
+    }
     sendTerminalInput(data);
+  });
+}
+
+function bindCompositionEvents() {
+  const textarea = $("terminal").querySelector(".xterm-helper-textarea");
+  if (!textarea) return;
+  textarea.addEventListener("compositionstart", () => {
+    state.isComposing = true;
+    state.compositionBuffer = "";
+  });
+  textarea.addEventListener("compositionend", () => {
+    setTimeout(() => {
+      state.isComposing = false;
+      if (state.compositionBuffer) {
+        const data = state.compositionBuffer;
+        state.compositionBuffer = "";
+        sendTerminalInput(data);
+      }
+      state.term?.focus();
+    }, 0);
   });
 }
 
@@ -178,6 +205,10 @@ function sendTerminalInput(data) {
 }
 
 function enqueueOutput(data) {
+  if (!state.outputFrame && !state.outputQueue && data.length < 2048) {
+    state.term.write(data);
+    return;
+  }
   state.outputQueue += data;
   if (state.outputFrame) return;
   state.outputFrame = requestAnimationFrame(() => {
@@ -208,6 +239,8 @@ function connectSocket() {
       state.term.reset();
       state.term.clear();
       state.isProgrammaticWrite = true;
+      state.isComposing = false;
+      state.compositionBuffer = "";
       const done = () => {
         if (token !== state.replayToken) return;
         requestAnimationFrame(() => {
@@ -249,6 +282,8 @@ function attachTerminal(sessionId) {
   connectSocket();
   state.replayToken += 1;
   state.isProgrammaticWrite = false;
+  state.isComposing = false;
+  state.compositionBuffer = "";
   state.outputQueue = "";
   if (state.outputFrame) cancelAnimationFrame(state.outputFrame);
   state.outputFrame = 0;

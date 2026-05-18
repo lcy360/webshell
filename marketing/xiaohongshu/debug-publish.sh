@@ -4,7 +4,7 @@ set -euo pipefail
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
 ASSETS="$ROOT/marketing/xiaohongshu/images"
 
-TITLE="多开AI终端，我用Web统一管"
+TITLE="手机也能远程开AI终端"
 CONTENT="$(awk 'BEGIN{p=0} /^# 正文/{p=1; next} /^# 标签/{p=0} p{print}' "$ROOT/marketing/xiaohongshu/note.md")"
 
 xhs-kit debug-publish \

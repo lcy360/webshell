@@ -9,21 +9,21 @@ fs.mkdirSync(outDir, { recursive: true });
 const pages = [
   {
     file: "01-cover.svg",
-    title: "多开AI终端",
-    subtitle: "我用 Web 统一管起来了",
-    lines: ["Claude / Codex / npm / ssh", "一个浏览器管理多个 shell", "手机上也能看进度"]
+    title: "手机也能",
+    subtitle: "远程接管正在跑的 AI 终端",
+    lines: ["Claude / Codex / npm / ssh", "浏览器管理多个 shell", "随时随地 vibe coding"]
   },
   {
     file: "02-problem.svg",
-    title: "不是AI慢",
-    subtitle: "是我找不到哪个窗口在干活",
-    lines: ["Claude 写功能", "Codex 做 review", "npm 跑服务", "日志和配置又开一堆"]
+    title: "离开电脑",
+    subtitle: "AI 还在跑，我却接不上",
+    lines: ["想看进度", "想补一句 prompt", "想重启服务", "不想开远程桌面"]
   },
   {
     file: "03-features.svg",
     title: "Webshell",
-    subtitle: "只做 shell 管理，不封装 AI CLI",
-    lines: ["切换 session 不黑屏", "中文输入更跟手", "移动端 ↑ ↓ Shift+Tab", "Cloudflare Tunnel 远程访问"]
+    subtitle: "多终端管理 + 手机远程操作",
+    lines: ["切换 session 不黑屏", "中文输入更跟手", "移动端 ↑ ↓ Shift+Tab", "Cloudflare Tunnel 外网访问"]
   },
   {
     file: "04-quick-start.svg",

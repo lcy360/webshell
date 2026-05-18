@@ -31,3 +31,11 @@ Representative posts from Xiaohongshu search:
 - Added a clear AI CLI use case: Claude writes, Codex reviews, npm runs tests.
 - Shortened the setup section and retained the security warning.
 - Updated card copy to match the new narrative.
+
+## Follow-up Positioning
+
+Remote access and mobile operation should stay near the top of the story. The stronger positioning is:
+
+> Mobile remote control for long-running AI CLI workflows.
+
+This combines two hooks: multi-terminal AI coding and the ability to continue from a phone without remote desktop. The copy was updated again to lead with mobile remote operation while keeping terminal management as the underlying mechanism.

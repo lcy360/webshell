@@ -1,14 +1,14 @@
 # 标题
 
-多开AI终端，我用Web统一管
+手机也能远程开AI终端
 
 # 正文
 
-最近 vibe coding 最大的阻力，不是 AI 不会写，而是我自己找不到窗口了。
+最近 vibe coding 最大的阻力，不是 AI 不会写，而是我离开电脑后就接不上了。
 
-一个终端跑 Claude Code，一个终端跑 Codex，一个终端跑 npm dev，再开几个 shell 看日志、改配置。看起来像在并行开发，实际是在疯狂切窗口。
+一个终端跑 Claude Code，一个终端跑 Codex，一个终端跑 npm dev，再开几个 shell 看日志、改配置。出门之后想看进度、补一句 prompt、重启服务，就很尴尬。
 
-所以我做了 Webshell：把多个本机 shell 放进浏览器统一管理。
+所以我做了 Webshell：把多个本机 shell 放进浏览器统一管理，也能通过手机远程接着操作。
 
 它不封装 Claude / Codex，也不替你决定工作流。你只是在浏览器里开 shell，然后自己启动：
 
@@ -24,7 +24,7 @@ ssh your-server
 1. 一个 shell 让 Claude 写功能
 2. 一个 shell 让 Codex 做 review
 3. 一个 shell 跑测试和服务
-4. 手机上临时看进度，不用远程桌面
+4. 手机上看进度、补命令、继续 vibe coding
 
 这版重点修了几个真痛点：
 
@@ -48,7 +48,7 @@ npm start
 
 如果要外网访问，建议只绑定 localhost，再用 Cloudflare Tunnel 或 Nginx HTTPS 反代。注意：能登录的人就能执行 shell 命令，密码和访问控制一定要认真做。
 
-这个工具更像是给 AI CLI 时代补一个“窗口管理层”。不是替代终端，而是让多终端并行时不再那么乱。
+这个工具更像是给 AI CLI 时代补一个“远程窗口管理层”。不是替代终端，而是让多终端并行和手机远程接管都顺一点。
 
 GitHub：
 https://github.com/lcy360/webshell

@@ -9,27 +9,27 @@ fs.mkdirSync(outDir, { recursive: true });
 const pages = [
   {
     file: "01-cover.svg",
-    title: "Webshell",
-    subtitle: "把多个 CLI 窗口收进一个 Web 控制台",
-    lines: ["管理 shell sessions", "浏览器远程操作", "Codex / Claude 自己在 shell 里启动"]
+    title: "多开AI终端",
+    subtitle: "我用 Web 统一管起来了",
+    lines: ["Claude / Codex / npm / ssh", "一个浏览器管理多个 shell", "手机上也能看进度"]
   },
   {
     file: "02-problem.svg",
-    title: "痛点",
-    subtitle: "不是不会写代码，是窗口太多",
-    lines: ["项目和窗口对不上", "session 切换慢", "手机上临时查看不方便"]
+    title: "不是AI慢",
+    subtitle: "是我找不到哪个窗口在干活",
+    lines: ["Claude 写功能", "Codex 做 review", "npm 跑服务", "日志和配置又开一堆"]
   },
   {
     file: "03-features.svg",
-    title: "这版做了什么",
-    subtitle: "只管理 shell，不封装 AI CLI",
-    lines: ["多 shell 管理", "中文输入优化", "移动端 ↑ ↓ Shift+Tab", "Cloudflare / Docker / systemd 模板"]
+    title: "Webshell",
+    subtitle: "只做 shell 管理，不封装 AI CLI",
+    lines: ["切换 session 不黑屏", "中文输入更跟手", "移动端 ↑ ↓ Shift+Tab", "Cloudflare Tunnel 远程访问"]
   },
   {
     file: "04-quick-start.svg",
     title: "快速启动",
     subtitle: "GitHub: lcy360/webshell",
-    code: ["git clone https://github.com/lcy360/webshell.git", "cd webshell && npm install", "npm run init-user && npm start"]
+    code: ["git clone github.com/lcy360/webshell", "cd webshell && npm install", "WEBSHELL_PASSWORD=xxx npm run init-user", "npm start"]
   }
 ];
 

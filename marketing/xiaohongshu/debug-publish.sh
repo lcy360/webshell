@@ -4,7 +4,7 @@ set -euo pipefail
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
 ASSETS="$ROOT/marketing/xiaohongshu/images"
 
-TITLE="多个 CLI 窗口，一个 Web 控制台"
+TITLE="多开AI终端，我用Web统一管"
 CONTENT="$(awk 'BEGIN{p=0} /^# 正文/{p=1; next} /^# 标签/{p=0} p{print}' "$ROOT/marketing/xiaohongshu/note.md")"
 
 xhs-kit debug-publish \
@@ -23,5 +23,5 @@ xhs-kit debug-publish \
   --tag "效率工具" \
   --tag "远程开发" \
   --tag "Web开发" \
-  --tag "终端工具" \
+  --tag "VibeCoding" \
   --verbose

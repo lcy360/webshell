@@ -39,3 +39,11 @@ Remote access and mobile operation should stay near the top of the story. The st
 > Mobile remote control for long-running AI CLI workflows.
 
 This combines two hooks: multi-terminal AI coding and the ability to continue from a phone without remote desktop. The copy was updated again to lead with mobile remote operation while keeping terminal management as the underlying mechanism.
+
+## Final Positioning
+
+The sharpest version is continuity across devices:
+
+> The same long-running terminal sessions, opened from desktop or phone, so coding context does not break.
+
+This is stronger than saying "mobile supported" because it explains the persistent-session advantage. Desktop and phone are just browser entry points. The terminal session stays alive on the host and can be resumed from either device.

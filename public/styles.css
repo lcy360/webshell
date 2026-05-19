@@ -327,7 +327,8 @@ p {
   width: 110px;
 }
 
-.close-session-btn {
+.close-session-btn,
+.focus-mode-btn {
   width: 34px;
   min-height: 34px;
   padding: 0;
@@ -337,6 +338,12 @@ p {
   color: var(--muted);
   font-size: 14px;
   font-weight: 700;
+}
+
+.focus-mode-btn:hover:not(:disabled) {
+  background: oklch(25% 0.025 166);
+  border-color: var(--accent);
+  color: var(--accent);
 }
 
 .close-session-btn:hover:not(:disabled) {
@@ -523,7 +530,8 @@ p {
     padding: 8px;
   }
 
-  .close-session-btn {
+  .close-session-btn,
+  .focus-mode-btn {
     width: 38px;
     min-height: 38px;
   }
@@ -548,6 +556,68 @@ p {
 
   .shortcut-key.wide {
     min-width: 88px;
+  }
+
+  .shell-focus-mode .app-shell {
+    grid-template-rows: minmax(0, 1fr);
+  }
+
+  .shell-focus-mode .sessions-pane {
+    display: none;
+  }
+
+  .shell-focus-mode .terminal-pane {
+    height: 100dvh;
+    min-height: 100dvh;
+  }
+
+  .shell-focus-mode .terminal-head {
+    min-height: 42px;
+    padding: 4px 6px;
+  }
+
+  .shell-focus-mode .terminal-head > div:first-child {
+    display: none;
+  }
+
+  .shell-focus-mode .actions {
+    width: 100%;
+    justify-content: flex-end;
+    gap: 4px;
+  }
+
+  .shell-focus-mode .terminal-shortcuts {
+    flex: 1;
+    min-width: 0;
+    gap: 4px;
+  }
+
+  .shell-focus-mode .shortcut-key {
+    min-height: 34px;
+    min-width: 34px;
+    padding: 0 7px;
+    font-size: 12px;
+  }
+
+  .shell-focus-mode .shortcut-key:not(.wide) {
+    width: auto;
+    min-width: 34px;
+    padding: 0 8px;
+    font-size: 13px;
+  }
+
+  .shell-focus-mode .shortcut-key.wide {
+    min-width: 74px;
+  }
+
+  .shell-focus-mode .close-session-btn,
+  .shell-focus-mode .focus-mode-btn {
+    width: 34px;
+    min-height: 34px;
+  }
+
+  .shell-focus-mode .terminal {
+    padding: 4px;
   }
 
   .xterm {

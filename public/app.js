@@ -11,6 +11,7 @@ const state = {
   isComposing: false,
   compositionBuffer: "",
   sessionSnapshots: new Map(),
+  isFocusMode: false,
   outputQueue: "",
   outputFrame: 0
 };
@@ -135,11 +136,16 @@ function renderTerminalMeta() {
     ? `${session.cwd || ""} · pid ${session.pid || ""}`
     : "Create a shell to start.";
   $("closeSessionBtn").disabled = !session;
+  $("focusModeBtn").disabled = !session;
+  $("focusModeBtn").textContent = state.isFocusMode ? "▣" : "⛶";
+  $("focusModeBtn").setAttribute("aria-label", state.isFocusMode ? "Exit full screen shell" : "Full screen shell");
+  $("focusModeBtn").setAttribute("title", state.isFocusMode ? "Exit full screen shell" : "Full screen shell");
 }
 
 function render() {
   renderSessions();
   renderTerminalMeta();
+  document.body.classList.toggle("shell-focus-mode", state.isFocusMode);
 }
 
 async function loadState() {
@@ -422,11 +428,19 @@ document.querySelectorAll("[data-terminal-input]").forEach((button) => {
     const inputMap = {
       up: "\x1b[A",
       down: "\x1b[B",
+      tab: "\t",
       "shift-tab": "\x1b[Z"
     };
     sendTerminalInput(inputMap[button.dataset.terminalInput]);
     state.term?.focus();
   });
+});
+
+$("focusModeBtn").addEventListener("click", () => {
+  state.isFocusMode = !state.isFocusMode;
+  render();
+  scheduleFitAndResize();
+  state.term?.focus();
 });
 
 $("refreshBtn").addEventListener("click", runAction(async () => {

@@ -11,3 +11,4 @@
 Run `node marketing/xiaohongshu/campaign/generate-campaign.mjs` after editing `posts.json`.
 Render PNGs with `marketing/xiaohongshu/campaign/render-images.sh`.
 Validate a post with `marketing/xiaohongshu/campaign/generated/<id>.debug.sh`.
+Use `marketing/xiaohongshu/campaign/generated/<id>.manual.md` for manual publishing.

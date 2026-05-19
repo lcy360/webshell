@@ -15,7 +15,7 @@ This campaign splits Webshell into focused Xiaohongshu posts. Each post should e
 - `posts.json`: canonical source for titles, body copy, tags, and card text.
 - `generated/*.md`: generated post drafts.
 - `generated/*.debug.sh`: validates a post with `xhs-kit debug-publish`.
-- `generated/*.publish.sh`: publishes a post with `xhs-kit publish`.
+- `generated/*.manual.md`: paste-ready manual publishing packet.
 - `images/<post-id>/*.png`: ready-to-upload 1080x1440 images.
 
 ## Workflow
@@ -26,4 +26,14 @@ marketing/xiaohongshu/campaign/render-images.sh
 marketing/xiaohongshu/campaign/generated/continuity.debug.sh
 ```
 
-Actual publishing still may require manual clicking in Xiaohongshu's creator UI because the floating publish button can change selectors.
+## Publishing Policy
+
+Do not use browser automation for the final Xiaohongshu publish action. Xiaohongshu may flag automated creator-page operations.
+
+Use automation only for:
+
+- draft generation
+- image generation
+- local format validation via `xhs-kit debug-publish`
+
+Final upload, preview, and publish should be done manually in a normal browser using `generated/<id>.manual.md`.

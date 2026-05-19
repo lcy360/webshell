@@ -44,7 +44,7 @@ function shellTags(post) {
   return post.tags.map((tag) => `  --tag ${JSON.stringify(tag)} \\`).join("\n");
 }
 
-function publishScript(post, command) {
+function debugScript(post) {
   const imageDir = `$ROOT/marketing/xiaohongshu/campaign/images/${post.id}`;
   return `#!/usr/bin/env bash
 set -euo pipefail
@@ -55,7 +55,7 @@ ASSETS="${imageDir}"
 TITLE=${JSON.stringify(post.title)}
 CONTENT="$(awk 'BEGIN{p=0} /^# 正文/{p=1; next} /^# 标签/{p=0} p{print}' "$ROOT/marketing/xiaohongshu/campaign/generated/${post.id}.md")"
 
-xhs-kit ${command} \\
+xhs-kit debug-publish \\
   --title "$TITLE" \\
   --content "$CONTENT" \\
   --image "$ASSETS/01.png" \\
@@ -63,7 +63,42 @@ xhs-kit ${command} \\
   --image "$ASSETS/03.png" \\
   --image "$ASSETS/04.png" \\
 ${shellTags(post)}
-  ${command === "debug-publish" ? "--verbose" : "--no-headless"}
+  --verbose
+`;
+}
+
+function manualPacket(post) {
+  const tags = post.tags.map((tag) => `#${tag}`).join(" ");
+  return `# Manual Publish Packet
+
+## Title
+
+${post.title}
+
+## Body
+
+${post.content}
+
+${tags}
+
+## Images
+
+Upload in this order:
+
+1. \`marketing/xiaohongshu/campaign/images/${post.id}/01.png\`
+2. \`marketing/xiaohongshu/campaign/images/${post.id}/02.png\`
+3. \`marketing/xiaohongshu/campaign/images/${post.id}/03.png\`
+4. \`marketing/xiaohongshu/campaign/images/${post.id}/04.png\`
+
+## Safe Publish Steps
+
+1. Open Xiaohongshu creator manually in a normal browser.
+2. Upload the images above.
+3. Paste the title and body.
+4. Review the preview yourself.
+5. Click publish manually.
+
+Do not use browser automation for the final publish step.
 `;
 }
 
@@ -102,10 +137,9 @@ for (const post of posts) {
   const postImageDir = path.join(imageRoot, post.id);
   fs.mkdirSync(postImageDir, { recursive: true });
   fs.writeFileSync(path.join(outDir, `${post.id}.md`), noteMarkdown(post));
-  fs.writeFileSync(path.join(outDir, `${post.id}.debug.sh`), publishScript(post, "debug-publish"));
-  fs.writeFileSync(path.join(outDir, `${post.id}.publish.sh`), publishScript(post, "publish"));
+  fs.writeFileSync(path.join(outDir, `${post.id}.debug.sh`), debugScript(post));
+  fs.writeFileSync(path.join(outDir, `${post.id}.manual.md`), manualPacket(post));
   fs.chmodSync(path.join(outDir, `${post.id}.debug.sh`), 0o755);
-  fs.chmodSync(path.join(outDir, `${post.id}.publish.sh`), 0o755);
 
   post.cards.forEach((card, index) => {
     fs.writeFileSync(path.join(postImageDir, `${String(index + 1).padStart(2, "0")}.svg`), renderCard(card));
@@ -123,6 +157,7 @@ ${indexRows.join("\n")}
 Run \`node marketing/xiaohongshu/campaign/generate-campaign.mjs\` after editing \`posts.json\`.
 Render PNGs with \`marketing/xiaohongshu/campaign/render-images.sh\`.
 Validate a post with \`marketing/xiaohongshu/campaign/generated/<id>.debug.sh\`.
+Use \`marketing/xiaohongshu/campaign/generated/<id>.manual.md\` for manual publishing.
 `);
 
 console.log(`Generated ${posts.length} campaign posts under ${path.relative(root, outDir)}`);

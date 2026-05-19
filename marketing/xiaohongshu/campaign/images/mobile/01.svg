@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1080" height="1440" viewBox="0 0 1080 1440">
+  <rect width="1080" height="1440" fill="#171b20"/>
+  <rect x="56" y="56" width="968" height="1328" rx="34" fill="#20262d" stroke="#3a444f" stroke-width="2"/>
+  <circle cx="144" cy="138" r="15" fill="#78e2bc"/>
+  <circle cx="196" cy="138" r="15" fill="#f0c266"/>
+  <circle cx="248" cy="138" r="15" fill="#ee8374"/>
+  <text x="92" y="286" class="kicker">WEBSHELL</text>
+  <text x="92" y="412" class="title">手机上</text>
+  <text x="92" y="492" class="subtitle">继续接管 AI coding session</text>
+  <rect x="92" y="540" width="896" height="410" rx="20" fill="#15191f" stroke="#34404a"/>
+  <text x="110" y="590" class="line">看进度</text>
+<text x="110" y="662" class="line">补 prompt</text>
+<text x="110" y="734" class="line">重启服务</text>
+<text x="110" y="806" class="line">查日志</text>
+  <text x="92" y="1276" class="footer">github.com/lcy360/webshell</text>
+  <style>
+    text { font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Hiragino Sans GB", "Segoe UI", sans-serif; }
+    .kicker { fill: #78e2bc; font-size: 28px; font-weight: 700; letter-spacing: 3px; }
+    .title { fill: #eef2f4; font-size: 86px; font-weight: 800; letter-spacing: 0; }
+    .subtitle { fill: #b8c1ca; font-size: 40px; font-weight: 520; letter-spacing: 0; }
+    .line { fill: #e0e6eb; font-size: 46px; font-weight: 650; letter-spacing: 0; }
+    .code { fill: #d7dee5; font-size: 30px; font-family: Menlo, Monaco, Consolas, monospace; letter-spacing: 0; }
+    .footer { fill: #7e8b96; font-size: 30px; font-weight: 520; letter-spacing: 0; }
+  </style>
+</svg>

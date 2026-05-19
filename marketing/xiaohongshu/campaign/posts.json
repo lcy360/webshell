@@ -1,0 +1,67 @@
+[
+  {
+    "id": "continuity",
+    "title": "电脑手机接着写代码",
+    "angle": "跨设备同一 terminal session，coding 连续性不断",
+    "content": "最近 vibe coding 最大的阻力，不是 AI 不会写，而是我换设备后上下文断了。\n\n电脑上一个终端跑 Claude Code，一个终端跑 Codex，一个终端跑 npm dev。出门后想用手机看进度、补 prompt、重启服务，最好还能接着同一个 terminal session 操作。\n\n所以我做了 Webshell：电脑和手机打开，看到的是同一批正在运行的 shell session。终端一直在服务端跑，浏览器只是入口。\n\n它不封装 Claude / Codex，也不替你决定工作流。你只是在浏览器里开 shell，然后自己启动：\n\n```bash\nclaude\ncodex\nnpm run dev\nssh your-server\n```\n\n我现在最常用的方式：\n\n1. 一个 shell 让 Claude 写功能\n2. 一个 shell 让 Codex 做 review\n3. 一个 shell 跑测试和服务\n4. 离开电脑后，手机继续接同一个 session\n\n这版重点修了几个真痛点：\n\n- 电脑和手机打开，都是同一个 terminal session\n- session 切换不黑屏\n- 中文输入更跟手\n- 手机端有 ↑、↓、Shift+Tab 快捷键\n- 支持登录、Docker、systemd、Cloudflare Tunnel\n- terminal 输出不落盘\n\n快速启动：\n\n```bash\ngit clone https://github.com/lcy360/webshell.git\ncd webshell\nnpm install\nWEBSHELL_PASSWORD='change-me' npm run init-user\nnpm start\n```\n\n打开 `http://127.0.0.1:4767`。\n\n外网访问建议绑定 localhost，再用 Cloudflare Tunnel 或 Nginx HTTPS 反代。能登录的人就能执行 shell 命令，密码和访问控制一定要认真做。\n\n这个工具更像是给 AI CLI 时代补一个“连续性层”。不是替代终端，而是让长时间运行的 AI terminal session 可以在电脑、手机、任何浏览器里接着操作。\n\nGitHub：\nhttps://github.com/lcy360/webshell",
+    "tags": ["开源项目", "程序员工具", "AI编程", "Claude", "Codex", "命令行", "效率工具", "远程开发", "Web开发", "VibeCoding"],
+    "cards": [
+      { "title": "电脑手机", "subtitle": "接着同一个 AI 终端继续写", "lines": ["同一批 shell sessions", "终端一直在服务端跑", "浏览器只是入口"] },
+      { "title": "换设备", "subtitle": "coding 上下文不该断", "lines": ["电脑开 Claude / Codex", "手机看进度补 prompt", "回电脑继续同一 session", "不用远程桌面"] },
+      { "title": "Webshell", "subtitle": "跨设备的 terminal session 管理", "lines": ["电脑手机打开同一 session", "切换 session 不黑屏", "移动端 ↑ ↓ Shift+Tab", "Cloudflare Tunnel 外网访问"] },
+      { "title": "快速启动", "subtitle": "GitHub: lcy360/webshell", "code": ["git clone github.com/lcy360/webshell", "cd webshell && npm install", "WEBSHELL_PASSWORD=xxx npm run init-user", "npm start"] }
+    ]
+  },
+  {
+    "id": "parallel-agents",
+    "title": "多开AI终端不再乱",
+    "angle": "Claude、Codex、npm、日志统一在浏览器里管理",
+    "content": "多 Agent 编程最爽的是并行，最烦的是窗口太多。\n\n我现在经常这样开：\n\n- Claude Code 写功能\n- Codex 做 review\n- npm dev 跑服务\n- 一个 shell 看日志\n- 一个 shell 改配置或 ssh 上机器\n\n以前切来切去很容易忘：哪个窗口是哪个项目？哪个任务已经跑完？哪个 session 还能继续输入？\n\n于是做了 Webshell，把多个 shell terminal 放进一个 Web 页面里。它不封装任何 AI CLI，只负责把 shell 管好。你想跑 Claude、Codex、Gemini、npm、ssh 都可以自己启动。\n\n我喜欢这个设计的原因是：它没有替我改工作流，只是给原来的 CLI 工作流加了一个管理层。\n\n这版已经处理了几个影响体验的问题：\n\n1. new shell 后直接出现在主窗口\n2. session 切换不卡很久\n3. 历史输出多也不会黑屏\n4. 中文输入更稳定\n5. 手机端有 ↑、↓、Shift+Tab\n6. 运行中的 shell 不因为切浏览器而断\n\n如果你也经常同时开好几个 AI CLI，这个工具的核心价值不是“更强的 Agent”，而是让并行工作流变得可控。\n\nGitHub：\nhttps://github.com/lcy360/webshell",
+    "tags": ["AI编程", "Claude", "Codex", "命令行", "效率工具", "程序员工具", "VibeCoding", "开源项目", "终端工具", "独立开发"],
+    "cards": [
+      { "title": "多开AI终端", "subtitle": "并行爽，窗口管理很痛", "lines": ["Claude 写功能", "Codex 做 review", "npm 跑服务", "日志和 ssh 也在旁边"] },
+      { "title": "一个Web页", "subtitle": "统一管理多个 shell", "lines": ["每个 shell 独立运行", "切换 session 不黑屏", "不封装 AI CLI"] },
+      { "title": "我的用法", "subtitle": "让 AI 并行，但人不迷路", "lines": ["功能开发", "代码审查", "测试服务", "线上排查"] },
+      { "title": "Webshell", "subtitle": "AI CLI 的窗口管理层", "lines": ["不是更强 Agent", "是更稳的并行工作流", "GitHub: lcy360/webshell"] }
+    ]
+  },
+  {
+    "id": "mobile",
+    "title": "手机上继续vibe coding",
+    "angle": "手机浏览器接管正在跑的 shell，补 prompt、看日志、重启服务",
+    "content": "我以前一直觉得手机写代码不现实，直到 AI CLI 开始长时间跑任务。\n\n现在很多时候不是要在手机上写一大段代码，而是：\n\n- 看 Claude 跑到哪了\n- 给 Codex 补一句 review 要求\n- 重启一下 npm dev\n- 看一眼日志有没有报错\n- 在外面临时处理一个 shell 命令\n\n这些操作不需要完整 IDE，但需要能接上正在跑的 terminal session。\n\n所以 Webshell 的手机端不是玩具功能。它的重点是：电脑上启动的 shell，手机浏览器打开后还能继续操作同一个 session。\n\n我专门给移动端加了几个实用点：\n\n1. 页面自动适配手机浏览器\n2. terminal 占主屏幕\n3. ↑、↓、Shift+Tab 放在顶部快捷操作区\n4. 中文输入做了 IME 处理\n5. session 切换走本地缓存，减少黑屏等待\n\n配合 Cloudflare Tunnel，就可以在外面安全访问自己的 Webshell。安全上我建议绑定 localhost，用 HTTPS/tunnel，再加长密码，别裸奔到公网。\n\n这个场景不是“手机替代电脑”，而是让长时间运行的 AI coding session 随时可以被接管。\n\nGitHub：\nhttps://github.com/lcy360/webshell",
+    "tags": ["手机编程", "远程开发", "AI编程", "Claude", "Codex", "效率工具", "程序员工具", "命令行", "VibeCoding", "开源项目"],
+    "cards": [
+      { "title": "手机上", "subtitle": "继续接管 AI coding session", "lines": ["看进度", "补 prompt", "重启服务", "查日志"] },
+      { "title": "不是手机IDE", "subtitle": "是接上正在跑的 terminal", "lines": ["电脑启动任务", "手机继续操作", "回电脑上下文还在"] },
+      { "title": "移动端优化", "subtitle": "为了真实 CLI 操作", "lines": ["↑ ↓ Shift+Tab", "中文输入", "session 快速切换", "terminal 占满主屏"] },
+      { "title": "随时随地", "subtitle": "vibe coding 不被设备打断", "lines": ["Cloudflare Tunnel", "HTTPS + 登录", "GitHub: lcy360/webshell"] }
+    ]
+  },
+  {
+    "id": "remote-access",
+    "title": "外网访问自己的AI终端",
+    "angle": "Cloudflare Tunnel + Webshell，让本机 shell 可以安全远程打开",
+    "content": "很多 AI CLI 任务都跑在自己的电脑或服务器上，但人不一定一直坐在电脑前。\n\n我想要的是：外面打开浏览器，也能看到自己那几个正在跑的 shell session。\n\nWebshell 负责把 shell 放进浏览器，Cloudflare Tunnel 负责把本地服务安全映射到域名。这样就不需要暴露端口，也不用折腾公网 IP。\n\n推荐方式：\n\n1. Webshell 只绑定 `127.0.0.1`\n2. 用 Cloudflare Tunnel 映射到自己的域名\n3. Webshell 自己有用户名密码\n4. 外层最好再加 Cloudflare Access\n5. 不要把 runtime cookies 和 auth 文件提交到仓库\n\n启动 Webshell：\n\n```bash\nHOST=127.0.0.1 PORT=4767 npm start\n```\n\nTunnel 指向：\n\n```text\nhttp://127.0.0.1:4767\n```\n\n这样在电脑、手机、平板上打开同一个域名，看到的都是同一批 terminal session。\n\n安全提醒：这个工具能执行 shell 命令，所以它不是普通网页后台。密码、HTTPS、访问控制都必须认真做。\n\nGitHub：\nhttps://github.com/lcy360/webshell",
+    "tags": ["Cloudflare", "远程开发", "自托管", "程序员工具", "AI编程", "命令行", "Web开发", "效率工具", "开源项目", "VibeCoding"],
+    "cards": [
+      { "title": "外网访问", "subtitle": "自己的 AI terminal sessions", "lines": ["不暴露端口", "不用公网 IP", "Cloudflare Tunnel 映射域名"] },
+      { "title": "推荐架构", "subtitle": "Webshell 绑定 localhost", "lines": ["127.0.0.1:4767", "Tunnel 到域名", "HTTPS + 登录"] },
+      { "title": "同一session", "subtitle": "电脑手机打开都能继续", "lines": ["Claude 还在跑", "npm 服务还在跑", "shell 上下文不断"] },
+      { "title": "安全提醒", "subtitle": "这是能执行命令的入口", "lines": ["强密码", "Cloudflare Access", "不要裸奔公网"] }
+    ]
+  },
+  {
+    "id": "security",
+    "title": "AI终端远程控制别裸奔",
+    "angle": "远程 Web shell 的安全边界：localhost、tunnel、密码、数据不落盘",
+    "content": "远程控制 shell 很方便，但也很危险。\n\nWebshell 的设计里，我一直把它当成“本地操作者工具”，不是公开 SaaS。因为只要能登录，就能用运行服务的系统用户执行命令。\n\n所以如果你要把它放到外网，我建议至少做到：\n\n1. Webshell 绑定 `127.0.0.1`\n2. 只通过 Cloudflare Tunnel 或 HTTPS 反代访问\n3. 设置长密码\n4. 最好加 Cloudflare Access\n5. runtime 数据目录不要提交 git\n6. terminal 输出不写入磁盘\n7. 不要把它当多用户权限系统\n\nWebshell 自带本地用户名密码登录，也提供 `WEBSHELL_DATA_DIR`，方便把 auth/state 放到仓库外面。\n\n它适合个人或小团队远程接管自己的 shell session，不适合直接暴露给不可信用户。\n\n我觉得 AI CLI 以后会越来越常驻运行：Claude 写功能、Codex review、npm dev、日志监控都可能跑很久。远程接管这些 session 是刚需，但安全边界一定要讲清楚。\n\nGitHub：\nhttps://github.com/lcy360/webshell",
+    "tags": ["安全", "自托管", "远程开发", "程序员工具", "AI编程", "命令行", "Cloudflare", "开源项目", "Web开发", "效率工具"],
+    "cards": [
+      { "title": "远程Shell", "subtitle": "方便，但不能裸奔", "lines": ["能登录就能执行命令", "它不是普通后台", "安全边界要清楚"] },
+      { "title": "推荐做法", "subtitle": "localhost + tunnel + 强密码", "lines": ["绑定 127.0.0.1", "HTTPS / Cloudflare Tunnel", "外层再加 Access"] },
+      { "title": "数据边界", "subtitle": "runtime 文件别进仓库", "lines": ["auth/state 放仓库外", "terminal 输出不落盘", "cookies 不提交"] },
+      { "title": "Webshell", "subtitle": "个人自托管 shell 管理器", "lines": ["适合自己用", "谨慎给团队用", "不要开放给不可信用户"] }
+    ]
+  }
+]

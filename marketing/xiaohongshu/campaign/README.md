@@ -26,14 +26,15 @@ marketing/xiaohongshu/campaign/render-images.sh
 marketing/xiaohongshu/campaign/generated/continuity.debug.sh
 ```
 
-## Publishing Policy
+## Draft Policy
 
-Do not use browser automation for the final Xiaohongshu publish action. Xiaohongshu may flag automated creator-page operations.
+`xhs-kit` in this repo is used only for draft generation, image generation, and local format validation.
 
-Use automation only for:
+Xiaohongshu does not expose a reliable public CLI for saving drafts, so the handoff is manual:
 
-- draft generation
-- image generation
-- local format validation via `xhs-kit debug-publish`
-
-Final upload, preview, and publish should be done manually in a normal browser using `generated/<id>.manual.md`.
+1. Generate the post package.
+2. Open `generated/<id>.manual.md`.
+3. Upload images in the listed order.
+4. Paste title, body, and tags.
+5. Save as draft manually inside Xiaohongshu.
+6. Publish later by hand when ready.

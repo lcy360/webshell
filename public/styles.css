@@ -527,7 +527,18 @@ p {
   }
 
   .terminal {
-    padding: 8px;
+    padding: 8px 10px 8px 8px;
+  }
+
+  .xterm-viewport {
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+
+  .xterm-viewport::-webkit-scrollbar {
+    display: none;
+    width: 0;
+    height: 0;
   }
 
   .close-session-btn,
@@ -617,7 +628,7 @@ p {
   }
 
   .shell-focus-mode .terminal {
-    padding: 4px;
+    padding: 4px 8px 4px 4px;
   }
 
   .xterm {

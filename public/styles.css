@@ -532,12 +532,16 @@ p {
 
   .xterm-viewport {
     direction: rtl;
+    left: 0 !important;
+    right: auto !important;
     scrollbar-color: oklch(48% 0.03 235) transparent;
     scrollbar-width: thin;
+    width: 100% !important;
   }
 
   .xterm-screen {
     direction: ltr;
+    margin-left: 8px;
   }
 
   .xterm-viewport::-webkit-scrollbar {
